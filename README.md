@@ -226,7 +226,7 @@ curl -H "Authorization: Bearer <TOKEN>" http://localhost:8000/projects/full
 
 Гандлин Александр - [Stepik](https://stepik.org/users/79694206/profile)
 
-Ссылка на проект: [https://github.com/GandlinAlexandr/ApPyHW2](https://github.com/GandlinAlexandr/ApPyHW3)
+Ссылка на проект: [https://github.com/GandlinAlexandr/ApPyHW3](https://github.com/GandlinAlexandr/ApPyHW3)
 
 <p align="right">(<a href="#readme-top">Вернуться к началу</a>)</p>
 
