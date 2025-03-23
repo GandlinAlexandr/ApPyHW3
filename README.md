@@ -1,5 +1,8 @@
 <a name="readme-top"></a>
 
+[license-shield]: https://img.shields.io/github/license/GandlinAlexandr/ApPyHW3.svg?style=for-the-badge
+[license-url]: https://github.com/GandlinAlexandr/ApPyHW3/blob/main/LICENSE
+
 [![MIT][license-shield]][license-url]
 [![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org/)
 [!['Black'](https://img.shields.io/badge/code_style-black-black?style=for-the-badge)](https://github.com/psf/black)
@@ -235,9 +238,6 @@ curl -H "Authorization: Bearer <TOKEN>" http://localhost:8000/projects/full
 
 [Postgres-Badge]: https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white
 [Postgres-url]: https://www.postgresql.org/
-
-[license-shield]: https://img.shields.io/github/license/GandlinAlexandr/ApPyHW3.svg?style=for-the-badge
-[license-url]: https://github.com/GandlinAlexandr/ApPyHW3/blob/main/LICENSE
 
 [DockerBadge]: https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white
 [Docker-url]: https://www.docker.com/
