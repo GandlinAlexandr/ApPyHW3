@@ -157,7 +157,7 @@ curl -H "Authorization: Bearer <TOKEN>" http://localhost:8000/projects/full
 ## Структура базы данных
 
 ### Таблица `user`
-Используется для хранения данных пользователей
+Используется для хранения данных пользователей.
 
 | Поле | Тип | Описание |
 |------|-----|----------|
@@ -196,10 +196,8 @@ curl -H "Authorization: Bearer <TOKEN>" http://localhost:8000/projects/full
 | owner_id | UUID, optional |
 | project_id | int, optional |
 
-Хранит истекшие или удалённые ссылки с полной информацией.
-
 ### Таблица `projects`
-
+Хранит данные о проектах пользователя.
 | Поле | Тип |
 |------|-----|
 | id | int |
@@ -207,7 +205,7 @@ curl -H "Authorization: Bearer <TOKEN>" http://localhost:8000/projects/full
 | created_at | datetime |
 | owner_id | UUID, optional |
 
-Позволяет группировать ссылки по категориям.
+
 
 <p align="right">(<a href="#readme-top">Вернуться к началу</a>)</p>
 
