@@ -72,5 +72,8 @@
 [license-shield]: https://img.shields.io/github/license/GandlinAlexandr/ApPyHW3.svg?style=for-the-badge
 [license-url]: https://github.com/GandlinAlexandr/ApPyHW3/blob/main/LICENSE
 
+[DockerBadge]: https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white
+[Docker-url]: https://www.docker.com/
+
 [Python-url]: https://python.org/
 [Python.org]: https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue
