@@ -74,7 +74,6 @@
 
 
 
-
 [license-shield]: https://img.shields.io/github/license/GandlinAlexandr/ApPyHW3.svg?style=for-the-badge
 [license-url]: https://github.com/GandlinAlexandr/ApPyHW3/blob/main/LICENSE
 
