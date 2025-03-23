@@ -41,11 +41,6 @@
 Для реализации проекта использовались следующие технологии:
 * [![Docker][DockerBadge]][Docker-url]
 * [![Python][Python.org]][Python-url]
-  * [![AIOgram][AIOgram]][AIOgram-url]
-  * [![Matplotlib][Matplotlib.org]][Matplotlib-url]
-  * [![Pandas][Рandas.pydata.org]][Pandas-url]
-  * [![Seaborn][Seaborn-badge]][Seaborn-url]
-* [![telegram][telegram]][telegram-url]
 
 
 <p align="right">(<a href="#readme-top">Вернуться к началу</a>)</p>
@@ -79,21 +74,3 @@
 
 [Python-url]: https://python.org/
 [Python.org]: https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue
-
-[Pandas-url]: https://pandas.pydata.org/
-[Рandas.pydata.org]: https://img.shields.io/badge/Pandas-2C2D72?style=for-the-badge&logo=pandas&logoColor=white
-
-[Matplotlib-url]: https://matplotlib.org/
-[Matplotlib.org]: https://img.shields.io/badge/Matplotlib-%23ffffff.svg?style=for-the-badge&logo=Matplotlib&logoColor=black
-
-[Seaborn-url]: https://seaborn.pydata.org/
-[Seaborn-badge]: https://img.shields.io/badge/Seaborn-%23ffffff.svg?style=for-the-badge&logo=Matplotlib&logoColor=blue
-
-[telegram-url]: https://telegram.org/
-[telegram]: https://img.shields.io/badge/Telegram-grey?style=for-the-badge&logo=telegram
-
-[AIOgram-url]: https://aiogram.dev/
-[AIOgram]: https://img.shields.io/badge/AIOgram-blue?style=for-the-badge&logo=aiogram
-
-[DockerBadge]: https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white
-[Docker-url]: https://www.docker.com/
