@@ -41,6 +41,8 @@
 Для реализации проекта использовались следующие технологии:
 * [![Docker][DockerBadge]][Docker-url]
 * [![Python][Python.org]][Python-url]
+  * [![FastAPI][FastAPI-Badge]][FastAPI-url]
+* [![Postgres][Postgres-Badge]][Postgres-url]
 
 
 <p align="right">(<a href="#readme-top">Вернуться к началу</a>)</p>
@@ -67,7 +69,11 @@
 
 <p align="right">(<a href="#readme-top">Вернуться к началу</a>)</p>
 
+[FastAPI-Badge]: https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi
+[FastAPI-url]: https://fastapi.tiangolo.com/
 
+[Postgres-Badge]: https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white
+[Postgres-url]: https://www.postgresql.org/
 
 [license-shield]: https://img.shields.io/github/license/GandlinAlexandr/ApPyHW3.svg?style=for-the-badge
 [license-url]: https://github.com/GandlinAlexandr/ApPyHW3/blob/main/LICENSE
