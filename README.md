@@ -133,11 +133,15 @@ Login и Logout производяется по клику `Authorize` в пра
 * Ручка `POST /links/shorten` - Создать короткую ссылку (авторизованный). Обязательные параметры: url. Опциональные параметры: id проекта и дата смерти ссылки и кастомный alias.
 
 ```powershell
-$TOKEN = "your_jwt_token_here"
-curl -X POST "http://localhost:8000/links/" `
+curl -X POST "http://localhost:8000/links/shorten" `
      -H "Authorization: Bearer $TOKEN" `
      -H "Content-Type: application/json" `
-     -d '{"original_url":"https://example.com","expires_at":"2025-12-31T23:59:59","project":"MyProject"}'
+     -d '{
+           "original_url": "https://example.com",
+           "expires_at": "2025-12-31T23:59:59",
+           "project": "MyProject",
+           "custom_alias": "my-custom-code"
+         }'
 ```
 * `POST /projects` - Создать пустой проект для ссылок (только владелец). Обязательный параметр: название проекта.
 ```powershell
@@ -188,7 +192,11 @@ curl -X DELETE "http://localhost:8000/projects/$PROJECT_ID" `
 ```powershell
 curl -X POST "http://localhost:8000/links/public" `
      -H "Content-Type: application/json" `
-     -d '{"original_url":"https://example.com", "expires_at":"2025-12-31T23:59:59"}'
+     -d '{
+           "original_url": "https://example.com",
+           "expires_at": "2025-12-31T23:59:59",
+           "custom_alias": "my-custom-code"
+         }'
 ```
 * `GET /{short_code}` - Перенаправление по ссылке. Без параметров. Ручка срабатывает автоматически при переходе по короткой ссылке.
 ```powershell
