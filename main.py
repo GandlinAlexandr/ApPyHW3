@@ -20,6 +20,7 @@ from auth.users import auth_backend, current_active_user, fastapi_users
 from sqlalchemy import desc
 import json
 
+
 # Использую lifespan
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -30,6 +31,7 @@ async def lifespan(app: FastAPI):
     yield  # Ожидание завершения приложения
     task.cancel()
     task_day.cancel()
+
 
 app = FastAPI(lifespan=lifespan)
 
@@ -65,9 +67,10 @@ app.include_router(
 # async def authenticated_route(user: User = Depends(current_active_user)):
 #     return {"message": f"Привет, {user.email}!"}
 
+
 # Функция для генерации случайного кода
 def generate_short_code(length=6):
-    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+    return "".join(random.choices(string.ascii_letters + string.digits, k=length))
 
 
 # Фоновая задача для удаления просроченных ссылок
@@ -77,10 +80,7 @@ async def delete_expired_links_task():
             now = datetime.now(timezone.utc).replace(tzinfo=None)
 
             expired_links = await session.execute(
-                select(Link).where(
-                    Link.expires_at.isnot(None),
-                    Link.expires_at <= now
-                )
+                select(Link).where(Link.expires_at.isnot(None), Link.expires_at <= now)
             )
             expired_links = expired_links.scalars().all()
 
@@ -95,7 +95,7 @@ async def delete_expired_links_task():
                         access_count=link.access_count,
                         last_accessed_at=link.last_accessed_at,
                         owner_id=link.owner_id,
-                        project_id=link.project_id
+                        project_id=link.project_id,
                     )
                     session.add(archived)
 
@@ -107,7 +107,8 @@ async def delete_expired_links_task():
 
             await session.commit()
 
-        await asyncio.sleep(30) # Проверяем раз в полминуты
+        await asyncio.sleep(30)  # Проверяем раз в полминуты
+
 
 # Функция удаления ссылки по времени существования
 async def delete_expired_links_task_days():
@@ -121,9 +122,8 @@ async def delete_expired_links_task_days():
             2. Или никогда не было перехода, но ссылка старая
             """
             condition = (
-                ((Link.last_accessed_at != None) & (Link.last_accessed_at < threshold)) |
-                ((Link.last_accessed_at == None) & (Link.created_at < threshold))
-            )
+                (Link.last_accessed_at != None) & (Link.last_accessed_at < threshold)
+            ) | ((Link.last_accessed_at == None) & (Link.created_at < threshold))
 
             result = await session.execute(select(Link).where(condition))
             links = result.scalars().all()
@@ -138,7 +138,7 @@ async def delete_expired_links_task_days():
                         expires_at=link.expires_at,
                         last_accessed_at=link.last_accessed_at,
                         owner_id=link.owner_id,
-                        project_id=link.project_id
+                        project_id=link.project_id,
                     )
                     session.add(archived)
 
@@ -150,11 +150,12 @@ async def delete_expired_links_task_days():
 
         await asyncio.sleep(3600 * 6)  # Проверяем раз в 6 часов
 
+
 # Функция проверки владельца ссылки
 async def verify_link_owner(
     link_id: int,
     db: AsyncSession = Depends(get_db),
-    user: User = Depends(current_active_user)
+    user: User = Depends(current_active_user),
 ) -> Link:
     result = await db.execute(select(Link).where(Link.id == link_id))
     link = result.scalar_one_or_none()
@@ -164,15 +165,22 @@ async def verify_link_owner(
         raise HTTPException(status_code=403, detail="Недостаточно прав доступа")
     return link
 
+
 # Создание короткой ссылки
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/jwt/login")
+
 
 # Создание короткой ссылки для зарегистрированного пользователя
 @app.post("/links/shorten", response_model=ShortenResponse, tags=["Authorized only"])
 async def shorten_url(
     original_url: str = Query(..., description="Исходный URL для сокращения"),
-    custom_alias: Optional[str] = Query(None, description="Кастомный alias (опционально)"),
-    expires_at: Optional[datetime] = Query(None, description="Дата действия ссылки в формате UTC: 2025-03-23T19:50 (опционально)"),
+    custom_alias: Optional[str] = Query(
+        None, description="Кастомный alias (опционально)"
+    ),
+    expires_at: Optional[datetime] = Query(
+        None,
+        description="Дата действия ссылки в формате UTC: 2025-03-23T19:50 (опционально)",
+    ),
     project_id: Optional[int] = Query(None, description="ID проекта (опционально)"),
     db: AsyncSession = Depends(get_db),
     token: str = Security(oauth2_scheme),
@@ -187,7 +195,9 @@ async def shorten_url(
             select(Link).where(Link.short_code == custom_alias)
         )
         if existing_link.scalar():
-            raise HTTPException(status_code=400, detail="Кастомный alias уже существует")
+            raise HTTPException(
+                status_code=400, detail="Кастомный alias уже существует"
+            )
         short_code = custom_alias
     else:
         short_code = generate_short_code()
@@ -199,14 +209,16 @@ async def shorten_url(
         )
         project = project_result.scalar()
         if not project:
-            raise HTTPException(status_code=404, detail="Проект не найден или не принадлежит вам")
+            raise HTTPException(
+                status_code=404, detail="Проект не найден или не принадлежит вам"
+            )
 
     new_link = Link(
         original_url=original_url,
         short_code=short_code,
         expires_at=expires_at,
         owner_id=user.id,
-        project_id=project_id
+        project_id=project_id,
     )
     db.add(new_link)
     await db.commit()
@@ -224,8 +236,13 @@ async def shorten_url(
 @app.post("/links/public", response_model=ShortenResponse, tags=["Public"])
 async def shorten_url_public(
     original_url: str = Query(..., description="Исходный URL для сокращения"),
-    custom_alias: Optional[str] = Query(None, description="Кастомный alias (опционально)"),
-    expires_at: Optional[datetime] = Query(None, description="Дата действия ссылки в формате UTC: 2025-03-23T19:50 (опционально)"),
+    custom_alias: Optional[str] = Query(
+        None, description="Кастомный alias (опционально)"
+    ),
+    expires_at: Optional[datetime] = Query(
+        None,
+        description="Дата действия ссылки в формате UTC: 2025-03-23T19:50 (опционально)",
+    ),
     db: AsyncSession = Depends(get_db),
 ):
     """
@@ -236,7 +253,9 @@ async def shorten_url_public(
             select(Link).where(Link.short_code == custom_alias)
         )
         if existing_link.scalar():
-            raise HTTPException(status_code=400, detail="Кастомный alias уже существует")
+            raise HTTPException(
+                status_code=400, detail="Кастомный alias уже существует"
+            )
         short_code = custom_alias
     else:
         short_code = generate_short_code()
@@ -245,7 +264,7 @@ async def shorten_url_public(
         original_url=original_url,
         short_code=short_code,
         expires_at=expires_at,
-        owner_id=None
+        owner_id=None,
     )
     db.add(new_link)
     await db.commit()
@@ -258,6 +277,7 @@ async def shorten_url_public(
         expires_at=expires_at,
     )
 
+
 # Перенаправление ссылки (запускается автоматически при переходе)
 @app.get("/{short_code}", tags=["Public"])
 async def redirect_to_url(short_code: str, db: AsyncSession = Depends(get_db)):
@@ -268,9 +288,10 @@ async def redirect_to_url(short_code: str, db: AsyncSession = Depends(get_db)):
     cached_url = redis_client.get(short_code)
     if cached_url:
         await db.execute(
-            Link.__table__.update().where(Link.short_code == short_code).values(
-                last_accessed_at=datetime.utcnow(),
-                access_count=Link.access_count + 1
+            Link.__table__.update()
+            .where(Link.short_code == short_code)
+            .values(
+                last_accessed_at=datetime.utcnow(), access_count=Link.access_count + 1
             )
         )
         await db.commit()
@@ -293,11 +314,12 @@ async def redirect_to_url(short_code: str, db: AsyncSession = Depends(get_db)):
 
     return RedirectResponse(url=link.original_url)
 
+
 # Поиск по оригинальной ссылке
 @app.get("/links/search", response_model=List[SearchLinkResponse], tags=["Public"])
 async def search_link(
-        original_url: str = Query(..., description="Оригинальный URL для поиска"),
-        db: AsyncSession = Depends(get_db),
+    original_url: str = Query(..., description="Оригинальный URL для поиска"),
+    db: AsyncSession = Depends(get_db),
 ):
     """
     Поиск всех коротких ссылок по оригинальному URL.
@@ -324,7 +346,7 @@ async def search_link(
             short_url=f"http://localhost:8000/{link.short_code}",
             original_url=link.original_url,
             created_at=link.created_at,
-            expires_at=link.expires_at
+            expires_at=link.expires_at,
         )
         for link in links
     ]
@@ -332,7 +354,7 @@ async def search_link(
     redis_client.setex(
         cache_key,
         600,
-        json.dumps([item.model_dump(mode="json") for item in response_data])
+        json.dumps([item.model_dump(mode="json") for item in response_data]),
     )
 
     return response_data
@@ -359,12 +381,15 @@ async def get_link_stats(short_code: str, db: AsyncSession = Depends(get_db)):
         "original_url": link.original_url,
         "created_at": link.created_at.isoformat() if link.created_at else None,
         "access_count": link.access_count,
-        "last_accessed_at": link.last_accessed_at.isoformat() if link.last_accessed_at else None
+        "last_accessed_at": (
+            link.last_accessed_at.isoformat() if link.last_accessed_at else None
+        ),
     }
 
     redis_client.setex(cache_key, 600, json.dumps(stats))
 
     return stats
+
 
 # Обновляет оригинальный URL по short_code. Только для владельца.
 @app.patch("/links/{short_code}", tags=["Authorized only"])
@@ -401,6 +426,7 @@ async def update_short_link(
         "short_url": f"http://localhost:8000/{short_code}",
     }
 
+
 # Удаляет короткую ссылку (только если пользователь — владелец) и сохраняет её в архив.
 @app.delete("/links/{short_code}", tags=["Authorized only"])
 async def delete_link(
@@ -431,7 +457,7 @@ async def delete_link(
         last_accessed_at=link.last_accessed_at,
         access_count=link.access_count,
         owner_id=link.owner_id,
-        project_id=link.project_id
+        project_id=link.project_id,
     )
     db.add(archived)
 
@@ -441,11 +467,13 @@ async def delete_link(
 
     return {"message": "Ссылка успешно удалена и добавлена в архив"}
 
+
 # Посмотреть удаленные и просроченные ссылки (только свои)
-@app.get("/links/expired", response_model=List[ExpiredLinkResponse], tags=["Authorized only"])
+@app.get(
+    "/links/expired", response_model=List[ExpiredLinkResponse], tags=["Authorized only"]
+)
 async def get_expired_links_for_user(
-    db: AsyncSession = Depends(get_db),
-    user: User = Depends(current_active_user)
+    db: AsyncSession = Depends(get_db), user: User = Depends(current_active_user)
 ):
     """
     Позволяет посмотреть в архив пользователя с мёртвыми ссылками.
@@ -467,7 +495,9 @@ async def get_expired_links_for_user(
             "created_at": link.created_at.isoformat() if link.created_at else None,
             "expires_at": link.expires_at.isoformat() if link.expires_at else None,
             "access_count": link.access_count,
-            "last_accessed_at": link.last_accessed_at.isoformat() if link.last_accessed_at else None,
+            "last_accessed_at": (
+                link.last_accessed_at.isoformat() if link.last_accessed_at else None
+            ),
             "project_id": link.project_id,
         }
         for link in links
@@ -492,6 +522,7 @@ async def create_project(
     await db.commit()
     await db.refresh(new_project)
     return {"id": new_project.id, "name": new_project.name}
+
 
 # Список проектов
 @app.get("/projects/full", tags=["Authorized only"])
@@ -522,21 +553,25 @@ async def get_projects_with_links(
         )
         links = links_result.scalars().all()
 
-        result.append({
-            "project_id": project.id,
-            "project_name": project.name,
-            "created_at": project.created_at.isoformat(),
-            "links": [
-                {
-                    "short_code": link.short_code,
-                    "original_url": link.original_url,
-                    "short_url": f"http://localhost:8000/{link.short_code}",
-                    "created_at": link.created_at.isoformat(),
-                    "expires_at": link.expires_at.isoformat() if link.expires_at else None
-                }
-                for link in links
-            ]
-        })
+        result.append(
+            {
+                "project_id": project.id,
+                "project_name": project.name,
+                "created_at": project.created_at.isoformat(),
+                "links": [
+                    {
+                        "short_code": link.short_code,
+                        "original_url": link.original_url,
+                        "short_url": f"http://localhost:8000/{link.short_code}",
+                        "created_at": link.created_at.isoformat(),
+                        "expires_at": (
+                            link.expires_at.isoformat() if link.expires_at else None
+                        ),
+                    }
+                    for link in links
+                ],
+            }
+        )
 
     redis_client.setex(cache_key, 300, json.dumps(result))  # Кэш на 5 минут
     return result
@@ -558,9 +593,7 @@ async def get_most_popular_links(
         return json.loads(cached)
 
     result = await db.execute(
-        select(Link)
-        .order_by(desc(Link.access_count))
-        .limit(limit)
+        select(Link).order_by(desc(Link.access_count)).limit(limit)
     )
     links = result.scalars().all()
 
@@ -568,7 +601,7 @@ async def get_most_popular_links(
         {
             "short_code": link.short_code,
             "original_url": link.original_url,
-            "access_count": link.access_count
+            "access_count": link.access_count,
         }
         for link in links
     ]
@@ -595,7 +628,9 @@ async def delete_project(
     )
     project = result.scalar_one_or_none()
     if not project:
-        raise HTTPException(status_code=404, detail="Проект не найден или не принадлежит вам")
+        raise HTTPException(
+            status_code=404, detail="Проект не найден или не принадлежит вам"
+        )
 
     # Удаление всех ссылок, привязанных к проекту
     links_result = await db.execute(select(Link).where(Link.project_id == project.id))
@@ -611,7 +646,7 @@ async def delete_project(
             last_accessed_at=link.last_accessed_at,
             access_count=link.access_count,
             owner_id=link.owner_id,
-            project_id=link.project_id
+            project_id=link.project_id,
         )
         db.add(archived)
 
@@ -622,4 +657,6 @@ async def delete_project(
     await db.delete(project)
     await db.commit()
 
-    return {"message": f"Проект {project.name} и все связанные ссылки архивированы и удалены"}
+    return {
+        "message": f"Проект {project.name} и все связанные ссылки архивированы и удалены"
+    }
