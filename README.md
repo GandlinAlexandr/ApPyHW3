@@ -115,6 +115,7 @@ Login и Logout производяется по клику `Authorize` в пра
 | `DELETE` | `/projects/{project_id}` | Удалить проект и все его ссылки (только владелец) |Authorized only|
 
 Видеодемонстрация ограничений доступа неавторизованным пользователям [тут](https://drive.google.com/file/d/1W2vi_za7pZWblNNooPPG2c2M535juTRN/view?usp=sharing).
+
 Видеодемонстрация работы эндпоинтов для авторизованных пользователей [тут](https://drive.google.com/file/d/1cWvMyLWd9C2UXF5Qiw9R1ZqNHu4qLzEC/view?usp=sharing).
 
 ### Публичные
