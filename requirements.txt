@@ -1,0 +1,14 @@
+alembic~=1.14.1
+fastapi~=0.115.8
+python-dotenv~=1.0.1
+sqlalchemy~=2.0.37
+fastapi-users[sqlalchemy]
+fastapi[all]
+uvicorn~=0.34.0
+fastapi-cache2[redis]
+redis~=5.2.1
+pydantic~=2.10.0
+psycopg2-binary
+asyncpg
+uvicorn[standard]
+aiosqlite
