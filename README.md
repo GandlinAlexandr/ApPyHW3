@@ -132,7 +132,7 @@ Login и Logout производяется по клику `Authorize` в пра
 ### Создание ссылки (авторизованный)
 
 ```bash
-curl -X POST "http://localhost:8000/links/shorten?original_url=https://google.com"  -H "Authorization: Bearer <TOKEN>"
+curl -X POST "http://localhost:8000/links/shorten?original_url=https://google.com&custom_alias=GooG&expires_at=2025-03-24T00%3A53&project_id=1"  -H "Authorization: Bearer <TOKEN>"
 ```
 
 ### Создание ссылки (анонимный)
