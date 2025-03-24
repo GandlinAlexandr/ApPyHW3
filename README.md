@@ -138,6 +138,7 @@ Login и Logout производяется по клику `Authorize` в пра
 * Ручка `POST /links/shorten` - Создать короткую ссылку (авторизованный). Обязательные параметры: url. Опциональные параметры: id проекта и дата смерти ссылки и кастомный alias (должен быть уникальным, иначе ошибка).
 
 ```powershell
+$TOKEN = "your_jwt_token_here"
 curl -X POST "http://localhost:8000/links/shorten" `
      -H "Authorization: Bearer $TOKEN" `
      -H "Content-Type: application/json" `
