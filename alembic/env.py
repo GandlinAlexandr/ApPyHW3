@@ -9,7 +9,7 @@ from database import ExpiredLink
 print("RAW DATABASE_URL bytes:", list(DATABASE_URL.encode("utf-8", errors="replace")))
 
 # Подключаем конфиг Alembic
-alembic_config  = context.config
+alembic_config = context.config
 
 alembic_config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
@@ -18,6 +18,7 @@ if alembic_config.config_file_name is not None:
     fileConfig(alembic_config.config_file_name)
 
 target_metadata = Base.metadata  # Указываем метаданные моделей
+
 
 def run_migrations_offline() -> None:
     """Запуск миграций в 'offline' режиме."""
@@ -32,6 +33,7 @@ def run_migrations_offline() -> None:
     with context.begin_transaction():
         context.run_migrations()
 
+
 def run_migrations_online() -> None:
     """Запуск миграций в 'online' режиме."""
     connectable = engine_from_config(
@@ -45,6 +47,7 @@ def run_migrations_online() -> None:
 
         with context.begin_transaction():
             context.run_migrations()
+
 
 if context.is_offline_mode():
     run_migrations_offline()
