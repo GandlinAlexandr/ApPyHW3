@@ -170,7 +170,7 @@ $SHORT = "abc123"
 curl -X PATCH "http://localhost:8000/links/$SHORT" `
      -H "Authorization: Bearer $TOKEN" `
      -H "Content-Type: application/json" `
-     -d '{"original_url":"https://updated.com", "expires_at":"2025-12-31T23:59:59"}'
+     -d '{ "original_url": "https://updated-url.com" }'
 ```
 * `DELETE /links/{short_code}` - Удалить ссылку (только владелец). Обязательный параметр: код ссылки.
 ```powershell
