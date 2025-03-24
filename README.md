@@ -120,11 +120,11 @@ Login и Logout производяется по клику `Authorize` в пра
 Данные ручки доступны для всех пользователей.
 | Метод | Путь | Описание | Тип |
 |-------|------|----------|-----|
-| `POST` | `/links/public` | Создать короткую ссылку |Puplic|
-| `GET` | `/{short_code}` | Перенаправление по ссылке |Puplic|
-| `GET` | `/links/search?original_url=...` | Поиск по оригинальному URL |Puplic|
-| `GET` | `/links/{short_code}/stats` | Получить статистику по ссылке (дата создания, количество переходов, дата последнего использования) |Puplic|
-| `GET` | `/links/popular` | Топ популярных ссылок по количеству переходов |Puplic|
+| `POST` | `/links/public` | Создать короткую ссылку |Public|
+| `GET` | `/{short_code}` | Перенаправление по ссылке |Public|
+| `GET` | `/links/search?original_url=...` | Поиск по оригинальному URL |Public|
+| `GET` | `/links/{short_code}/stats` | Получить статистику по ссылке (дата создания, количество переходов, дата последнего использования) |Public|
+| `GET` | `/links/popular` | Топ популярных ссылок по количеству переходов |Public|
 
 Видеодемонстрация работы публичных эндпоинтов [тут](https://drive.google.com/file/d/1Gxi8miXPbfQz2vAmBX7EJGsXi1gr4yN3/view?usp=sharing).
 
