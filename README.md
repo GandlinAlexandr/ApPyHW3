@@ -111,6 +111,7 @@ Login и Logout производяется по клику `Authorize` в пра
 | `GET` | `/projects/full` | Получить перечень всех проектов и ссылок в них (только владелец) |Authorized only|
 | `PATCH` | `/links/{short_code}` | Обновить URL (только владелец) |Authorized only|
 | `DELETE` | `/links/{short_code}` | Удалить ссылку (только владелец) |Authorized only|
+| `DELETE` | `/projects/{project_id}` | Удалить проект и все его ссылки (только владелец) |Authorized only|
 
 ### Публичные
 Данные ручки доступны для всех пользователей.
