@@ -230,7 +230,7 @@ curl -X GET "http://localhost:8000/links/popular"
 | Поле | Тип | Описание |
 |------|-----|----------|
 | id | UUID | Уникальный идентификатор |
-| email | str | Почта |
+| email | str | Почта/Логин |
 | hashed_password | str | Пароль |
 | ... | ... | ... |
 
