@@ -31,17 +31,14 @@
     <li><a href="#основные-ручки-api">Основные ручки API</a></li>
         <ul><li><a href="#авторизация">Авторизация</a></li></ul>
         <ul><li><a href="#для-авторизованных-пользователей">Для авторизованных пользователей</a></li></ul>
-        <ul><li><a href="#публичные">Публичные</a></li></ul>
+        <ul><li><a href="#публичные">Публичные</a></li></ul></li>
     <li><a href="#примеры-запросов">Примеры запросов</a></ul>
-      <ul><ul><li><a href="#создание-ссылки-авторизованный">Создание ссылки (авторизованный)</a></li></ul>
-      <ul><li><a href="#создание-ссылки-анонимный">Создание ссылки (анонимный)</a></li></ul>
-      <ul><li><a href="#получить-статистику">Получить статистику</a></li></ul>
-      <ul><li><a href="#поиск-по-url">Поиск по URL</a></li></ul>
-      <ul><li><a href="#все-проекты-с-ссылками">Все проекты с ссылками</a></li></ul>
-    <li><a href="#структура-базы-данных">Структура базы данных</a></li></ul>
-    <ul><ul><li><a href="#таблица-links">Таблица links</a></li></ul>
-    <ul><li><a href="#таблица-user">Таблица user</a></li></ul>
-    <ul><li><a href="#таблица-expired_links">Таблица expired_links</a></li></ul></ul>
+        <ul><ul><li><a href="#ручки-для-авторизованных-пользователей">Ручки для авторизованных пользователей</a></li></ul>
+        <ul><li><a href="#публичные-ручки">Публичные ручки</a></li></ul></ul>
+    <ul><li><a href="#структура-базы-данных">Структура базы данных</a></li></ul>
+        <ul><ul><li><a href="#таблица-links">Таблица links</a></li></ul>
+        <ul><li><a href="#таблица-user">Таблица user</a></li></ul>
+        <ul><li><a href="#таблица-expired_links">Таблица expired_links</a></li></ul></ul>
     <ul><li><a href="#кэширование">Кэширование</a></li></ul>
     <ul><li><a href="#время-жизни-ссылок">Время жизни ссылок</a></li></ul>
     <ul><li><a href="#итог">Итог</a></li></ul>
@@ -131,34 +128,83 @@ Login и Logout производяется по клику `Authorize` в пра
 
 ## Примеры запросов
 
-### Создание ссылки (авторизованный)
+### Ручки для авторизованных пользователей
 
-```bash
-curl -X POST "http://localhost:8000/links/shorten?original_url=https://google.com&custom_alias=GooG&expires_at=2025-03-24T00%3A53&project_id=1"  -H "Authorization: Bearer <TOKEN>"
+* Ручка `POST /links/shorten` - Создать короткую ссылку (авторизованный). Обязательные параметры: url. Опциональные параметры: id проекта и дата смерти ссылки и кастомный alias.
+
+```powershell
+$TOKEN = "your_jwt_token_here"
+curl -X POST "http://localhost:8000/links/" `
+     -H "Authorization: Bearer $TOKEN" `
+     -H "Content-Type: application/json" `
+     -d '{"original_url":"https://example.com","expires_at":"2025-12-31T23:59:59","project":"MyProject"}'
 ```
-
-### Создание ссылки (анонимный)
-
-```bash
-curl -X POST "http://localhost:8000/links/public?original_url=https://google.com"
+* `POST /projects` - Создать пустой проект для ссылок (только владелец). Обязательный параметр: название проекта.
+```powershell
+$TOKEN = "your_jwt_token_here"
+curl -X POST "http://localhost:8000/projects" `
+     -H "Authorization: Bearer $TOKEN" `
+     -H "Content-Type: application/json" `
+     -d '{"name":"MyProject"}'
 ```
-
-### Получить статистику
-
-```bash
-curl http://localhost:8000/links/abc123/stats
+* `GET /links/expired` - Получить архив мёртвых ссылок (только владелец). Без параметров.
+```powershell
+$TOKEN = "your_jwt_token_here"
+curl -X GET "http://localhost:8000/links/expired" `
+     -H "Authorization: Bearer $TOKEN"
 ```
-
-### Поиск по URL
-
-```bash
-curl http://localhost:8000/links/search?original_url=https://google.com
+* `GET /projects/full` - Получить перечень всех проектов и ссылок в них (только владелец). Без параметров.
+```powershell
+$TOKEN = "your_jwt_token_here"
+curl -X GET "http://localhost:8000/projects/full" `
+     -H "Authorization: Bearer $TOKEN"
 ```
+* `PATCH /links/{short_code}` - Обновить URL (только владелец). Обязательный параметр: код ссылки, новая ссылка.
+```powershell
+$TOKEN = "your_jwt_token_here"
+$SHORT = "abc123"
+curl -X PATCH "http://localhost:8000/links/$SHORT" `
+     -H "Authorization: Bearer $TOKEN" `
+     -H "Content-Type: application/json" `
+     -d '{"original_url":"https://updated.com", "expires_at":"2025-12-31T23:59:59"}'
+```
+* `DELETE /links/{short_code}` - Удалить ссылку (только владелец). Обязательный параметр: код ссылки.
+```powershell
+$TOKEN = "your_jwt_token_here"
+$SHORT = "abc123"
+curl -X DELETE "http://localhost:8000/links/$SHORT" `
+     -H "Authorization: Bearer $TOKEN"
+```
+* `DELETE /projects/{project_id}` - Удалить проект и все его ссылки (только владелец). Обязательный параметр: id проекта.
+```powershell
+$TOKEN = "your_jwt_token_here"
+$PROJECT_ID = "your_project_id_here"
+curl -X DELETE "http://localhost:8000/projects/$PROJECT_ID" `
+     -H "Authorization: Bearer $TOKEN"
+```
+### Публичные ручки
 
-### Все проекты с ссылками
-
-```bash
-curl -H "Authorization: Bearer <TOKEN>" http://localhost:8000/projects/full
+* `POST /links/public` - Создать короткую ссылку. Обязательные параметры: url. Опциональные параметры: дата смерти ссылки и кастомный alias.
+```powershell
+curl -X POST "http://localhost:8000/links/public" `
+     -H "Content-Type: application/json" `
+     -d '{"original_url":"https://example.com", "expires_at":"2025-12-31T23:59:59"}'
+```
+* `GET /{short_code}` - Перенаправление по ссылке. Без параметров. Ручка срабатывает автоматически при переходе по короткой ссылке.
+```powershell
+curl -X GET "http://localhost:8000/abc123"
+```
+* `GET /links/search?original_url=...` - Поиск по оригинальному URL. Обязательный параметр: url.
+```powershell
+curl -X GET "http://localhost:8000/links/search?original_url=https://example.com"
+```
+* `GET /links/{short_code}/stats` - Получить статистику по ссылке (дата создания, количество переходов, дата последнего использования). Обязательный параметр: код ссылки.
+```powershell
+curl -X GET "http://localhost:8000/links/abc123/stats"
+```
+* `GET /links/popular` - Топ популярных ссылок по количеству переходов. Без параметров.
+```powershell
+curl -X GET "http://localhost:8000/links/popular"
 ```
 
 <p align="right">(<a href="#readme-top">Вернуться к началу</a>)</p>
