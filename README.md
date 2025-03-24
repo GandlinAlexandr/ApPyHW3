@@ -167,10 +167,10 @@ curl -X GET "http://localhost:8000/projects/full" `
 ```powershell
 $TOKEN = "your_jwt_token_here"
 $SHORT = "abc123"
-curl -X PATCH "http://localhost:8000/links/$SHORT" `
-     -H "Authorization: Bearer $TOKEN" `
-     -H "Content-Type: application/json" `
-     -d '{ "original_url": "https://updated-url.com" }'
+$NEW_URL = "https://updated-url.com"
+curl -X PATCH "http://localhost:8000/links/$SHORT?new_url=$NEW_URL" `
+     -H "Authorization: Bearer $TOKEN"
+
 ```
 * `DELETE /links/{short_code}` - Удалить ссылку (только владелец). Обязательный параметр: код ссылки.
 ```powershell
