@@ -45,7 +45,6 @@ class ExpiredLink(Base):
     last_accessed_at = Column(DateTime, nullable=True)
     access_count = Column(Integer, default=0)
     owner_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
-    project_id = Column(Integer, ForeignKey("projects.id"), nullable=True)
 
 
 # Модель для хранения проектов
