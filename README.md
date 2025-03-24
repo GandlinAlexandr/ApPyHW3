@@ -112,9 +112,9 @@ Login и Logout производяется по клику `Authorize` в пра
 | `DELETE` | `/links/{short_code}` | Удалить ссылку (только владелец) |Authorized only|
 | `DELETE` | `/projects/{project_id}` | Удалить проект и все его ссылки (только владелец) |Authorized only|
 
-Видеодемонстрация ограничений доступа неавторизованным пользователям [тут](https://drive.google.com/file/d/1W2vi_za7pZWblNNooPPG2c2M535juTRN/view?usp=sharing).
+Видеодемонстрация ограничений доступа неавторизованным пользователям [тут](https://drive.google.com/file/d/1W2vi_za7pZWblNNooPPG2c2M535juTRN/view?usp=sharing). Показана работа всех непубличных эндпоинтов.
 
-Видеодемонстрация аутентификации и работы эндпоинтов для авторизованных пользователей [тут](https://drive.google.com/file/d/1cWvMyLWd9C2UXF5Qiw9R1ZqNHu4qLzEC/view?usp=sharing).
+Видеодемонстрация аутентификации и работы эндпоинтов для авторизованных пользователей [тут](https://drive.google.com/file/d/1cWvMyLWd9C2UXF5Qiw9R1ZqNHu4qLzEC/view?usp=sharing). Показана работа всех публичных эндпоинтов, а также механизм самоудаления ссылок по указанию даты их смерти при создании. Тот же механизм реализован и для непубличного эндпоинта `POST /links/shorten` для авторизованных пользователей.
 
 ### Публичные
 Данные ручки доступны для всех пользователей.
