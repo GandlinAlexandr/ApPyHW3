@@ -98,8 +98,6 @@ Swagger-документация будет доступна по адресу: 
 - `POST /auth/jwt/login` — вход (JWT)
 - `GET /users/me` — текущий пользователь
 
-Видеодемонстрация аутентификации [тут](https://drive.google.com/file/d/14Nd3M6-fz77Q96xdftycjwqtlpaF75rH/view?usp=sharing).
-
 Login и Logout производяется по клику `Authorize` в правом верхнем углу Swagger (или соотвествующим запросом) после регистрации посредством POST-запроса.
 
 ### Для авторизованных пользователей
@@ -116,7 +114,7 @@ Login и Logout производяется по клику `Authorize` в пра
 
 Видеодемонстрация ограничений доступа неавторизованным пользователям [тут](https://drive.google.com/file/d/1W2vi_za7pZWblNNooPPG2c2M535juTRN/view?usp=sharing).
 
-Видеодемонстрация работы эндпоинтов для авторизованных пользователей [тут](https://drive.google.com/file/d/1cWvMyLWd9C2UXF5Qiw9R1ZqNHu4qLzEC/view?usp=sharing).
+Видеодемонстрация аутентификации и работы эндпоинтов для авторизованных пользователей [тут](https://drive.google.com/file/d/1cWvMyLWd9C2UXF5Qiw9R1ZqNHu4qLzEC/view?usp=sharing).
 
 ### Публичные
 Данные ручки доступны для всех пользователей.
