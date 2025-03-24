@@ -95,7 +95,6 @@ async def delete_expired_links_task():
                         access_count=link.access_count,
                         last_accessed_at=link.last_accessed_at,
                         owner_id=link.owner_id,
-                        project_id=link.project_id,
                     )
                     session.add(archived)
 
@@ -138,7 +137,6 @@ async def delete_expired_links_task_days():
                         expires_at=link.expires_at,
                         last_accessed_at=link.last_accessed_at,
                         owner_id=link.owner_id,
-                        project_id=link.project_id,
                     )
                     session.add(archived)
 
@@ -223,6 +221,11 @@ async def shorten_url(
     db.add(new_link)
     await db.commit()
     await db.refresh(new_link)
+
+    # Очистка кэша списка проектов пользователя (если указано)
+    if project_id is not None:
+        # Очистка кэша списка проектов пользователя
+        redis_client.delete(f"projects_with_links:{user.id}")
 
     return ShortenResponse(
         short_code=short_code,
@@ -414,6 +417,7 @@ async def update_short_link(
 
     # Очистка кэша Redis перед обновлением
     redis_client.delete(short_code)
+    redis_client.delete(f"stats:{short_code}")
 
     # Обновление ссылки в БД
     link.original_url = str(new_url)
@@ -457,13 +461,14 @@ async def delete_link(
         last_accessed_at=link.last_accessed_at,
         access_count=link.access_count,
         owner_id=link.owner_id,
-        project_id=link.project_id,
     )
     db.add(archived)
 
     await db.delete(link)
     await db.commit()
     redis_client.delete(short_code)
+    redis_client.delete(f"expired:{user.id}")
+    redis_client.delete(f"stats:{short_code}")
 
     return {"message": "Ссылка успешно удалена и добавлена в архив"}
 
@@ -480,6 +485,7 @@ async def get_expired_links_for_user(
     """
     cache_key = f"expired:{user.id}"
     cached_data = redis_client.get(cache_key)
+    redis_client.delete(f"expired:{user.id}")
     if cached_data:
         return json.loads(cached_data)
 
@@ -498,7 +504,6 @@ async def get_expired_links_for_user(
             "last_accessed_at": (
                 link.last_accessed_at.isoformat() if link.last_accessed_at else None
             ),
-            "project_id": link.project_id,
         }
         for link in links
     ]
@@ -646,7 +651,6 @@ async def delete_project(
             last_accessed_at=link.last_accessed_at,
             access_count=link.access_count,
             owner_id=link.owner_id,
-            project_id=link.project_id,
         )
         db.add(archived)
 
@@ -656,6 +660,10 @@ async def delete_project(
     # Удаление самого проекта
     await db.delete(project)
     await db.commit()
+
+    # Очистка кэша списка проектов пользователя
+    redis_client.delete(f"projects_with_links:{user.id}")
+    redis_client.delete(f"expired:{user.id}")
 
     return {
         "message": f"Проект {project.name} и все связанные ссылки архивированы и удалены"
